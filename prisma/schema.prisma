@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id       Int       @id @default(autoincrement())
+  id       String    @id @default(uuid())
   username String    @unique
   password String
   role     String    @default("User")
@@ -26,7 +26,7 @@ model Room {
 model Booking {
   id        Int      @id @default(autoincrement())
   roomId    Int
-  userId    Int
+  userId    String
   startTime DateTime
   endTime   DateTime
   User      User     @relation(fields: [userId], references: [id])
