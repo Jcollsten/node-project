@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
 import { registerUserService, getAllUsersService, getUserByIdService, updateUserService, deleteUserService } from '../services/userService';
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
@@ -6,12 +7,13 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     const { username, password } = req.body;
 
     if (!username || !password) {
-      res.status(400).json({ message: 'Please provide both username and password' });
+      res.status(400).json({ message: 'Please provide username and password' });
       return;
     }
 
-    const result = await registerUserService(username, password);
-    res.status(201).json(result);
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = await registerUserService({ username, password: hashedPassword, role: 'User' });
+    res.status(201).json(newUser);
   } catch (error) {
     console.error('Error in registerUser:', error);
     res.status(500).json({ message: 'Something went wrong' });

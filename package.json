@@ -4,11 +4,14 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "ts-node src/server.ts",
+    "dev": "nodemon src/server.ts",
     "docker-up": "docker-compose up -d",
     "docker-down": "docker-compose down",
     "build": "tsc",
     "prisma-studio": "npx prisma studio",
+    "prisma-migrate": "npx prisma migrate dev",
+    "prisma-generate": "npx prisma generate",
+    "prisma-push": "npx prisma db push",
     "restart": "npm run stop && npm start",
     "stop": "npm run docker-down"
   },
@@ -33,7 +36,9 @@
     "socket.io": "^4.8.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.13.10",
     "eslint": "^9.22.0",
     "nodemon": "^3.1.9",
