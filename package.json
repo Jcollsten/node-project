@@ -1,50 +1,18 @@
 {
-  "name": "project",
+  "name": "node-project",
   "version": "1.0.0",
-  "main": "index.js",
+  "private": true,
   "scripts": {
-    "start": "node dist/server.js",
-    "dev": "nodemon src/server.ts",
-    "docker-up": "docker-compose up -d",
-    "docker-down": "docker-compose down",
-    "build": "tsc",
-    "prisma-studio": "npx prisma studio",
-    "prisma-migrate": "npx prisma migrate dev",
-    "prisma-generate": "npx prisma generate",
-    "prisma-push": "npx prisma db push",
-    "restart": "npm run stop && npm start",
-    "stop": "npm run docker-down"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
-  "dependencies": {
-    "@prisma/client": "^6.5.0",
-    "bcryptjs": "^3.0.2",
-    "compression": "^1.8.0",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
-    "express": "^4.21.2",
-    "express-async-errors": "^3.1.1",
-    "helmet": "^8.0.0",
-    "jsonwebtoken": "^9.0.2",
-    "morgan": "^1.10.0",
-    "pg": "^8.14.0",
-    "redis": "^4.7.0",
-    "redoc-express": "^2.1.0",
-    "socket.io": "^4.8.1"
+    "start": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "install-all": "npm install --prefix backend && npm install --prefix frontend",
+    "build": "npm run build --prefix backend && npm run build --prefix frontend"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
-    "@types/express": "^5.0.1",
-    "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.13.10",
-    "eslint": "^9.22.0",
+    "concurrently": "^9.1.2",
     "nodemon": "^3.1.9",
-    "prettier": "^3.5.3",
-    "prisma": "^6.5.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "ts-node": "^10.9.2"
+  },
+  "dependencies": {
+    "cors": "^2.8.5"
   }
 }
