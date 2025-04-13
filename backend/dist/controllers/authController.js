@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
-import { getUserByUsernameService } from '../services/userService';
 import dotenv from 'dotenv';
+import { getUserByUsernameService } from '../services/userService.js';
 dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRATION = '1h';
@@ -22,7 +22,10 @@ export const loginUser = async (req, res) => {
             res.status(404).json({ message: 'User not found' });
             return;
         }
+        console.log('Plain-text password from request:', password);
+        console.log('Hashed password from database:', user.password);
         const isPasswordValid = await bcrypt.compare(password, user.password);
+        console.log('Password comparison result (bcrypt.compare):', isPasswordValid);
         if (!isPasswordValid) {
             res.status(401).json({ message: 'Invalid password' });
             return;

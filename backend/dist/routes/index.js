@@ -1,8 +1,8 @@
 import express from 'express';
-import userRoutes from './userRoutes';
-import roomRoutes from './roomRoutes';
-import authRoutes from './authRoutes';
-import bookingRoutes from './bookingRoutes';
+import userRoutes from './userRoutes.js';
+import roomRoutes from './roomRoutes.js';
+import authRoutes from './authRoutes.js';
+import bookingRoutes from './bookingRoutes.js';
 const router = express.Router();
 // Mount user routes
 router.use('/users', (req, res, next) => {

@@ -1,4 +1,4 @@
-import { createRoomService, getAllRoomsService, getRoomByIdService, updateRoomService, deleteRoomService } from '../services/roomService';
+import { createRoomService, getAllRoomsService, getRoomByIdService, updateRoomService, deleteRoomService } from '../services/roomService.js';
 export const createRoom = async (req, res) => {
     try {
         const { name, capacity, type } = req.body;

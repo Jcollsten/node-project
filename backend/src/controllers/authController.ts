@@ -32,11 +32,9 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    // Debugging logs (remove in production)
     console.log('Plain-text password from request:', password);
     console.log('Hashed password from database:', user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     console.log('Password comparison result (bcrypt.compare):', isPasswordValid);
 
     if (!isPasswordValid) {

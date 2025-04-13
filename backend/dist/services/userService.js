@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
-// Service to register a new user with a default role of 'User'
 export const registerUserService = async (data) => {
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -10,10 +9,12 @@ export const registerUserService = async (data) => {
     if (existingUser) {
         throw new Error('User already exists');
     }
-    // Hash password and create user
     const hash = await bcrypt.hash(data.password, 10);
     const newUser = await prisma.user.create({
-        data,
+        data: {
+            username: data.username,
+            password: hash,
+        },
     });
     return {
         id: newUser.id,

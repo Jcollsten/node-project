@@ -18,7 +18,6 @@ export const getAllBookings = async (req: AuthenticatedRequest, res: Response): 
 // Get bookings by user ID (User-specific bookings)
 export const getBookingsByUserId = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   console.log('Controller hit: getBookingsByUserId');
-  console.log('Controller hit: getBookingsByUserId');
   console.log('Decoded user in getBookingsByUserId:', req.user);
 
   try {

@@ -4,25 +4,18 @@ console.log('JWT_SECRET:', JWT_SECRET);
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
-    console.log('Authorization header:', authHeader);
-    console.log('Token received:', token);
-    console.log(process.env.JWT_SECRET);
     if (!token) {
-        console.error('No token provided');
-        res.status(403).json({ message: 'Invalid or expired token' });
-        return; // Ensure the function ends here
+        res.status(401).json({ message: 'Unauthorized: Token is missing' });
+        return;
     }
     try {
-        if (!JWT_SECRET) {
-            throw new Error('JWT_SECRET is not defined');
-        }
         const decoded = jwt.verify(token, JWT_SECRET);
         req.user = decoded;
         next();
+        console;
     }
     catch (error) {
-        console.error('Token validation error:', error);
-        res.status(403).json({ message: 'Invalid or expired token' });
+        res.status(401).json({ message: 'Unauthorized: Invalid or expired token' });
     }
 };
 export const authorizeRole = (role) => {

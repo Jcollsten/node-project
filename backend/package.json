@@ -15,7 +15,8 @@
     "prisma-push": "npx prisma db push",
     "restart": "npm run stop && npm start",
     "stop": "npm run docker-down",
-    "install-all": "npm install --prefix backend && npm install --prefix frontend"
+    "install-all": "npm install --prefix backend && npm install --prefix frontend",
+    "test:socket": "node --loader ts-node/esm src/tests/socketClient.ts"
   },
   "keywords": [],
   "author": "",
@@ -36,7 +37,8 @@
     "pg": "^8.14.0",
     "redis": "^4.7.0",
     "redoc-express": "^2.1.0",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.5",
@@ -44,7 +46,7 @@
     "@types/express": "^5.0.1",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.13.10",
+    "@types/node": "^22.14.0",
     "concurrently": "^9.1.2",
     "eslint": "^9.22.0",
     "jest": "^29.7.0",
@@ -53,6 +55,6 @@
     "prisma": "^6.5.0",
     "ts-jest": "^29.3.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.3"
   }
 }

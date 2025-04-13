@@ -3,9 +3,11 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export const createRoomService = async (data: { name: string; capacity: number; type: string }) => {
-  return prisma.room.create({
+  const room = await prisma.room.create({
     data,
   });
+
+  return room;
 };
 
 export const getAllRoomsService = async () => {

@@ -11,7 +11,8 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    const newUser = await registerUserService({ username, password: 'User' }); // Pass plain-text password
+    // Pass the plain-text password to the service
+    const newUser = await registerUserService({ username, password });
     res.status(201).json(newUser);
   } catch (error) {
     console.error('Error in registerUser:', error);

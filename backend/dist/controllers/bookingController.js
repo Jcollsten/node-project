@@ -1,4 +1,4 @@
-import { getAllBookingsService, getBookingsByUserIdService, getBookingsByRoomIdService, getBookingByIdService, createBookingService, updateBookingService, deleteBookingService, checkRoomAvailabilityService } from '../services/bookingService';
+import { getAllBookingsService, getBookingsByUserIdService, getBookingsByRoomIdService, getBookingByIdService, createBookingService, updateBookingService, deleteBookingService, checkRoomAvailabilityService } from '../services/bookingService.js';
 // Get all bookings with pagination (Admin only)
 export const getAllBookings = async (req, res) => {
     console.log('Decoded user:', req.user);
@@ -14,7 +14,6 @@ export const getAllBookings = async (req, res) => {
 };
 // Get bookings by user ID (User-specific bookings)
 export const getBookingsByUserId = async (req, res) => {
-    console.log('Controller hit: getBookingsByUserId');
     console.log('Controller hit: getBookingsByUserId');
     console.log('Decoded user in getBookingsByUserId:', req.user);
     try {

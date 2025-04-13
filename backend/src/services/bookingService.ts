@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { io } from '../server.js'; // Import socket instance
 
 const prisma = new PrismaClient();
 
@@ -59,7 +60,7 @@ export const createBookingService = async (bookingData: { roomId: number; userId
     throw new Error('Room is not available for the selected time');
   }
 
-  return prisma.booking.create({
+  const booking = await prisma.booking.create({
     data: {
       roomId,
       userId,
@@ -67,6 +68,11 @@ export const createBookingService = async (bookingData: { roomId: number; userId
       endTime: new Date(endTime),
     },
   });
+
+  // Notify clients about the new booking
+  io.emit('bookingCreated', booking);
+
+  return booking;
 };
 
 export const updateBookingService = async (id: number, updatedData: any) => {
@@ -83,10 +89,15 @@ export const updateBookingService = async (id: number, updatedData: any) => {
     }
   }
 
-  return prisma.booking.update({
+  const updatedBooking = await prisma.booking.update({
     where: { id },
     data: updatedData,
   });
+
+  // Notify clients about the updated booking
+  io.emit('bookingUpdated', updatedBooking);
+
+  return updatedBooking;
 };
 
 export const deleteBookingService = async (id: number) => {
@@ -96,9 +107,14 @@ export const deleteBookingService = async (id: number) => {
     throw new Error('Booking not found');
   }
 
-  return prisma.booking.delete({
+  const deletedBooking = await prisma.booking.delete({
     where: { id },
   });
+
+  // Notify clients about the deleted booking
+  io.emit('bookingDeleted', deletedBooking);
+
+  return deletedBooking;
 };
 
 export const checkRoomAvailabilityService = async (roomId: number, startTime: string, endTime: string) => {

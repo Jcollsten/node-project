@@ -1,5 +1,4 @@
-import bcrypt from 'bcryptjs';
-import { registerUserService, getAllUsersService, getUserByIdService, updateUserService, deleteUserService } from '../services/userService';
+import { registerUserService, getAllUsersService, getUserByIdService, updateUserService, deleteUserService } from '../services/userService.js';
 export const registerUser = async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -7,8 +6,8 @@ export const registerUser = async (req, res) => {
             res.status(400).json({ message: 'Please provide username and password' });
             return;
         }
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = await registerUserService({ username, password: hashedPassword, role: 'User' });
+        // Pass the plain-text password to the service
+        const newUser = await registerUserService({ username, password });
         res.status(201).json(newUser);
     }
     catch (error) {
