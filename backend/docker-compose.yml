@@ -1,33 +1,28 @@
+version: '3.9'
+
 services:
   backend:
     build:
       context: .
       args:
-        NODE_ENV: ${NODE_ENV:-production}
+        NODE_ENV: production
     ports:
       - '3000:3000'
-    environment:
-      NODE_ENV: ${NODE_ENV:-production}
-      DATABASE_URL: ${DATABASE_URL}
-      REDIS_URL: ${REDIS_URL}
-      JWT_SECRET: ${JWT_SECRET}
+    env_file:
+      - .env.production
     depends_on:
       - redis
       - postgres
+    command: npm run start
     volumes:
       - .:/app
       - /app/node_modules
-    command: npm run dev
-    env_file:
-      - .env.production
 
   socket-client:
     build:
       context: .
       args:
         NODE_ENV: production
-    environment:
-      NODE_ENV: production
     command: node dist/utils/socketClient.js
     depends_on:
       - backend
@@ -45,10 +40,8 @@ services:
     image: postgres:15.2
     container_name: postgres_backend
     restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
+    env_file:
+      - .env.production
     ports:
       - '5433:5432'
     volumes:

@@ -107,25 +107,29 @@ export const createBooking = async (req: AuthenticatedRequest, res: Response): P
 // Update a booking
 export const updateBooking = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
-    const updatedData = req.body;
+    const { bookingId, startTime, endTime } = req.body;
     const userId = req.user?.id;
-    const role = req.user?.role;
 
-    // get the booking by ID to check if it exists
-    const booking = await getBookingByIdService(Number(id));
+    if (!userId || !bookingId || !startTime || !endTime) {
+      res.status(400).json({ message: 'Missing required fields: userId, bookingId, startTime, or endTime' });
+      return;
+    }
+
+    const booking = await getBookingByIdService(Number(bookingId));
     if (!booking) {
       res.status(404).json({ message: 'Booking not found' });
       return;
     }
 
-    if (role !== 'Admin' && booking.userId !== userId) {
-      res.status(403).json({ message: 'Forbidden' });
+    if (booking.userId !== userId) {
+      res.status(403).json({ message: 'Forbidden: You can only update your own bookings' });
       return;
     }
 
-    const updatedBooking = await updateBookingService(Number(id), updatedData);
-    await redisClient.del('allBookings');
+    // Update the booking
+    const updatedData = { startTime, endTime };
+    const updatedBooking = await updateBookingService(Number(bookingId), updatedData);
+    await redisClient.del('allBookings'); // Clear the cache
     res.status(200).json(updatedBooking);
   } catch (error) {
     console.error('Error in updateBooking:', error);

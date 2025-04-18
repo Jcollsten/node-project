@@ -1,0 +1,5 @@
+2025-04-18T20:37:42.986Z [ERROR] Error in registerUser: 
+Invalid `prisma.user.findUnique()` invocation:
+
+
+The table `public.User` does not exist in the current database. - {"code":"P2021","meta":{"modelName":"User","table":"public.User"},"clientVersion":"6.5.0","name":"PrismaClientKnownRequestError","stack":"PrismaClientKnownRequestError: \nInvalid `prisma.user.findUnique()` invocation:\n\n\nThe table `public.User` does not exist in the current database.\n    at Wn.handleRequestError (/app/node_modules/@prisma/client/runtime/library.js:121:7534)\n    at Wn.handleAndLogRequestError (/app/node_modules/@prisma/client/runtime/library.js:121:6858)\n    at Wn.request (/app/node_modules/@prisma/client/runtime/library.js:121:6565)\n    at async l (/app/node_modules/@prisma/client/runtime/library.js:130:10067)\n    at async registerUserService (file:///app/src/services/userService.ts:5:26)\n    at async registerUser (file:///app/src/controllers/userController.ts:13:25)"}

@@ -1,26 +1,29 @@
-# Use the official Node.js image as the base image
-FROM node:20
+# Use official Node.js LTS image
+FROM node:20-slim
 
-# Set the working directory inside the container
+# Set working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Install all dependencies (including devDependencies)
-RUN npm install
+# Install dependencies 
+ARG NODE_ENV=production
+RUN if [ "$NODE_ENV" = "development" ]; then npm install; else npm install --only=production; fi
 
-# Set the default environment to production
-ENV NODE_ENV=production
+# Set environment
+ENV NODE_ENV=$NODE_ENV
 
-# Copy the rest of the application code to the working directory
+# Copy remaining app files
 COPY . .
 
-# Build the TypeScript code
-RUN npm run build
+# Build TypeScript code
+RUN if [ "$NODE_ENV" = "production" ]; then npm run build; fi
 
-# Expose the port your application runs on
+# Prisma
+RUN npx prisma generate
+
+# Expose app port
 EXPOSE 3000
 
-# Run Prisma migrations, generate the Prisma client, and start the application
-CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma generate && node dist/server.js"]
+# Run the app
+CMD ["node", "dist/server.js"]

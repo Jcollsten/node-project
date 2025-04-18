@@ -8,7 +8,7 @@ const router = Router();
 // For users
 router.get('/my-bookings', authenticateToken, getBookingsByUserId);
 router.post('/createBooking', authenticateToken, createBooking);
-router.put('/updateBooking:id', authenticateToken, updateBooking);
+router.put('/updateBooking', authenticateToken, updateBooking);
 router.delete('/:id', authenticateToken, deleteBooking);
 
 // For Admins
