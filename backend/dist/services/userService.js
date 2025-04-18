@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 export const registerUserService = async (data) => {
-    // Check if user already exists
     const existingUser = await prisma.user.findUnique({
         where: { username: data.username },
     });
@@ -44,10 +43,9 @@ export const getUserByIdService = async (id) => {
         },
     });
 };
-// Service to update user details (e.g., username, password, or role)
+// Service to update user
 export const updateUserService = async (id, updatedData) => {
     try {
-        // Only hash the password if it's provided
         if (updatedData.password) {
             updatedData.password = await bcrypt.hash(updatedData.password, 10);
         }
@@ -77,11 +75,9 @@ export const getUserByUsernameService = async (username) => {
 };
 // Service to update a user's role (Admin only)
 export const updateUserRoleService = async (id, role) => {
-    // Validate the role
     if (!['User', 'Admin'].includes(role)) {
         throw new Error('Invalid role provided');
     }
-    // Update the user's role
     const updatedUser = await prisma.user.update({
         where: { id },
         data: { role },

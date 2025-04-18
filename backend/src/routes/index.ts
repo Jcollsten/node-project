@@ -7,6 +7,12 @@ import logger from '../utils/loggerUtil.js';
 
 const router = express.Router();
 
+router.get('/', (req, res) => {
+  res.status(200).json({ message: 'Welcome to the coworking-space school project API by Jonas' });  
+}
+);
+
+
 // Mount user routes
 router.use(
   '/users',

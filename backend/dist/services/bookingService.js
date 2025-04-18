@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { io } from '../server.js';
 const prisma = new PrismaClient();
 export const getAllBookingsService = async (page, limit) => {
     const offset = (page - 1) * limit;
@@ -52,7 +53,7 @@ export const createBookingService = async (bookingData) => {
     if (!isAvailable) {
         throw new Error('Room is not available for the selected time');
     }
-    return prisma.booking.create({
+    const booking = await prisma.booking.create({
         data: {
             roomId,
             userId,
@@ -60,6 +61,9 @@ export const createBookingService = async (bookingData) => {
             endTime: new Date(endTime),
         },
     });
+    // send notification
+    io.emit('bookingCreated', booking);
+    return booking;
 };
 export const updateBookingService = async (id, updatedData) => {
     const booking = await prisma.booking.findUnique({ where: { id } });
@@ -72,19 +76,25 @@ export const updateBookingService = async (id, updatedData) => {
             throw new Error('Room is not available for the selected time');
         }
     }
-    return prisma.booking.update({
+    const updatedBooking = await prisma.booking.update({
         where: { id },
         data: updatedData,
     });
+    // Notify clients
+    io.emit('bookingUpdated', updatedBooking);
+    return updatedBooking;
 };
 export const deleteBookingService = async (id) => {
     const booking = await prisma.booking.findUnique({ where: { id } });
     if (!booking) {
         throw new Error('Booking not found');
     }
-    return prisma.booking.delete({
+    const deletedBooking = await prisma.booking.delete({
         where: { id },
     });
+    // Notify clients
+    io.emit('bookingDeleted', deletedBooking);
+    return deletedBooking;
 };
 export const checkRoomAvailabilityService = async (roomId, startTime, endTime) => {
     const overlappingBookings = await prisma.booking.findMany({
@@ -92,8 +102,8 @@ export const checkRoomAvailabilityService = async (roomId, startTime, endTime) =
             roomId,
             OR: [
                 {
-                    startTime: { lte: new Date(endTime) },
-                    endTime: { gte: new Date(startTime) },
+                    startTime: { lte: new Date(endTime) }, //less than or equal to endTime
+                    endTime: { gte: new Date(startTime) }, //greater than or equal to startTime
                 },
             ],
         },

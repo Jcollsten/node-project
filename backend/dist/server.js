@@ -3,38 +3,46 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
-import cors from 'cors'; // Import CORS
+import cors from 'cors';
 import routes from './routes/index.js';
+import logger from './utils/loggerUtil.js';
 dotenv.config();
 const app = express();
-// Enable CORS
 app.use(cors({
-    origin: 'http://localhost:5173', // Allow requests from the frontend
-    methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-    credentials: true, // Allow cookies if needed
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
 }));
 app.use(bodyParser.json());
 app.use('/api', routes);
-process.on('uncaughtException', (error) => {
-    console.error('Uncaught Exception:', error);
-});
-process.on('unhandledRejection', (reason, promise) => {
-    console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+// global logging for handling errors in routes and middleware
+app.use((err, req, res, next) => {
+    logger.error(`Unhandled error: ${err.message}`, { stack: err.stack });
+    res.status(err.status || 500).json({
+        error: 'Internal Server Error',
+        message: err.message || 'Something went wrong',
+    });
 });
 const httpServer = createServer(app);
 export const io = new Server(httpServer, {
     cors: {
-        origin: 'http://localhost:5', // Allow requests from the frontend
-        methods: ['GET', 'POST'],
+        origin: 'http://localhost:3000',
     },
 });
 io.on('connection', (socket) => {
-    console.log('A user connected');
+    logger.info('WebSocket connection established', { socketId: socket.id });
     socket.on('disconnect', () => {
-        console.log('A user disconnected');
+        logger.info('WebSocket connection closed', { socketId: socket.id });
+    });
+});
+app.use((err, req, res, next) => {
+    logger.error(`Unhandled error: ${err.message}`, { stack: err.stack });
+    res.status(err.status || 500).json({
+        error: 'Internal Server Error',
+        message: err.message || 'Something went wrong',
     });
 });
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    logger.info(`Server running on port ${PORT}`);
 });
