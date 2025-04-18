@@ -7,18 +7,17 @@ WORKDIR /app
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
 
-# Install dependencies
-ARG NODE_ENV=production
-RUN if [ "$NODE_ENV" = "production" ]; then npm install --production; else npm install; fi
+# Install all dependencies (including devDependencies)
+RUN npm install
 
 # Set the default environment to production
-ENV NODE_ENV=$NODE_ENV
+ENV NODE_ENV=production
 
 # Copy the rest of the application code to the working directory
 COPY . .
 
 # Build the TypeScript code
-RUN if [ "$NODE_ENV" = "production" ]; then npm run build; fi
+RUN npm run build
 
 # Expose the port your application runs on
 EXPOSE 3000

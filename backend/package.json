@@ -4,10 +4,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
+    "start": "node dist/server.js",
+    "build": "tsc",
     "dev": "nodemon --watch src --ext ts --exec \"node --loader ts-node/esm\" src/server.ts",
     "docker-up": "docker-compose up -d",
     "docker-down": "docker-compose down",
-    "build": "tsc",
     "prisma-studio": "npx prisma studio",
     "prisma-migrate": "npx prisma migrate dev",
     "prisma-generate": "npx prisma generate",
@@ -43,6 +44,7 @@
   "devDependencies": {
     "@tsconfig/node20": "^20.1.5",
     "@types/bcrypt": "^5.0.2",
+    "@types/body-parser": "^1.19.5",
     "@types/express": "^5.0.1",
     "@types/jest": "^29.5.14",
     "@types/jsonwebtoken": "^9.0.9",
