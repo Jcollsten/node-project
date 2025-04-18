@@ -17,11 +17,11 @@ ENV NODE_ENV=$NODE_ENV
 # Copy the rest of the application code to the working directory
 COPY . .
 
-# Build the TypeScript code 
+# Build the TypeScript code
 RUN if [ "$NODE_ENV" = "production" ]; then npm run build; fi
 
 # Expose the port your application runs on
 EXPOSE 3000
 
-# Start the application
-CMD ["node", "dist/server.js"]
+# Run Prisma migrations before starting the application
+CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
