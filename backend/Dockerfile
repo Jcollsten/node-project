@@ -11,6 +11,9 @@ COPY package*.json ./
 ARG NODE_ENV=production
 RUN if [ "$NODE_ENV" = "production" ]; then npm install --production; else npm install; fi
 
+# Set the default environment to production
+ENV NODE_ENV=$NODE_ENV
+
 # Copy the rest of the application code to the working directory
 COPY . .
 
@@ -19,9 +22,6 @@ RUN if [ "$NODE_ENV" = "production" ]; then npm run build; fi
 
 # Expose the port your application runs on
 EXPOSE 3000
-
-# Set the default environment to production
-ENV NODE_ENV=production
 
 # Start the application
 CMD ["node", "dist/server.js"]

@@ -18,6 +18,8 @@ services:
       - .:/app
       - /app/node_modules
     command: npm run dev
+    env_file:
+      - .env.production
 
   socket-client:
     build:
@@ -29,6 +31,8 @@ services:
     command: node dist/utils/socketClient.js
     depends_on:
       - backend
+    env_file:
+      - .env.production
 
   redis:
     image: redis:7.0
