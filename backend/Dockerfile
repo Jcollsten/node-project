@@ -22,5 +22,5 @@ RUN npm run build
 # Expose the port your application runs on
 EXPOSE 3000
 
-# Run Prisma migrations before starting the application
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
+# Run Prisma migrations, generate the Prisma client, and start the application
+CMD ["sh", "-c", "npx prisma migrate deploy && npx prisma generate && node dist/server.js"]
