@@ -1,14 +1,23 @@
 import { createClient } from 'redis';
+import logger from './loggerUtil.js';
 
 const redisClient = createClient({
-  url: 'redis://localhost:6379', // Update if Redis is hosted elsewhere
+  url: process.env.REDIS_URL,
 });
 
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
+redisClient.on('error', (err) => {
+  console.error('Redis Client Error', err);
+});
 
 (async () => {
   await redisClient.connect();
-  console.log('Connected to Redis');
+  logger.info('Connected to Redis');
 })();
+
+process.on('SIGINT', async () => {
+  logger.info('SIGINT signal received: closing Redis client');
+  await redisClient.quit();
+  process.exit(0);
+});
 
 export default redisClient;

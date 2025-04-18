@@ -1,41 +1,41 @@
 import { Request, Response } from 'express';
 import { getAllBookingsService, getBookingsByUserIdService, getBookingsByRoomIdService, getBookingByIdService, createBookingService, updateBookingService, deleteBookingService, checkRoomAvailabilityService } from '../services/bookingService.js';
 import { AuthenticatedRequest } from '../types/express';
+import redisClient from '../utils/redisClient.js';
+import logger from '../utils/loggerUtil.js';
 
 // Get all bookings with pagination (Admin only)
 export const getAllBookings = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  console.log('Decoded user:', req.user);
+  logger.info('Fetching all bookings');
   try {
     const { page = 1, limit = 10 } = req.query;
     const bookings = await getAllBookingsService(Number(page), Number(limit));
+    await redisClient.set('allBookings', JSON.stringify(bookings), { EX: 3600 }); // Cache for 1 hour
+    logger.info('All bookings fetched and cached');
     res.status(200).json(bookings);
   } catch (error) {
-    console.error('Error in getAllBookings:', error);
+    logger.error('Error in getAllBookings:', error);
     res.status(500).json({ message: 'Something went wrong' });
   }
 };
 
-// Get bookings by user ID (User-specific bookings)
+// Get bookings by user ID (User-specific)
 export const getBookingsByUserId = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  console.log('Controller hit: getBookingsByUserId');
-  console.log('Decoded user in getBookingsByUserId:', req.user);
-
+  logger.info('Fetching bookings for user:', req.user?.id);
   try {
     const userId = req.user?.id;
-    console.log('User ID from token:', userId);
 
     if (!userId) {
-      console.log('User ID is missing, returning 403');
+      logger.warn('User ID is missing, returning 403');
       res.status(403).json({ message: 'Unauthorized' });
       return;
     }
 
-    // Fetch bookings for the user
     const bookings = await getBookingsByUserIdService(userId);
-    console.log('Bookings returned to controller:', bookings);
+    logger.info('Bookings fetched for user:', userId);
     res.status(200).json(bookings);
   } catch (error) {
-    console.error('Error in getBookingsByUserId:', error);
+    logger.error('Error in getBookingsByUserId:', error);
     res.status(500).json({ message: 'Something went wrong' });
   }
 };
@@ -96,6 +96,7 @@ export const createBooking = async (req: AuthenticatedRequest, res: Response): P
     }
 
     const booking = await createBookingService({ roomId, userId, startTime, endTime });
+    await redisClient.del('allBookings');
     res.status(201).json(booking);
   } catch (error) {
     console.error('Error in createBooking:', error);
@@ -103,7 +104,7 @@ export const createBooking = async (req: AuthenticatedRequest, res: Response): P
   }
 };
 
-// Update a booking (User can update their own bookings; Admin can update any)
+// Update a booking
 export const updateBooking = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
@@ -111,7 +112,7 @@ export const updateBooking = async (req: AuthenticatedRequest, res: Response): P
     const userId = req.user?.id;
     const role = req.user?.role;
 
-    // Fetch the booking to ensure the user has access
+    // get the booking by ID to check if it exists
     const booking = await getBookingByIdService(Number(id));
     if (!booking) {
       res.status(404).json({ message: 'Booking not found' });
@@ -124,6 +125,7 @@ export const updateBooking = async (req: AuthenticatedRequest, res: Response): P
     }
 
     const updatedBooking = await updateBookingService(Number(id), updatedData);
+    await redisClient.del('allBookings');
     res.status(200).json(updatedBooking);
   } catch (error) {
     console.error('Error in updateBooking:', error);
@@ -131,14 +133,14 @@ export const updateBooking = async (req: AuthenticatedRequest, res: Response): P
   }
 };
 
-// Delete a booking (User can delete their own bookings; Admin can delete any)
+// Delete a booking
 export const deleteBooking = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const userId = req.user?.id;
     const role = req.user?.role;
 
-    // Fetch the booking to ensure the user has access
+    // get the booking
     const booking = await getBookingByIdService(Number(id));
     if (!booking) {
       res.status(404).json({ message: 'Booking not found' });
@@ -151,6 +153,7 @@ export const deleteBooking = async (req: AuthenticatedRequest, res: Response): P
     }
 
     await deleteBookingService(Number(id));
+    await redisClient.del('allBookings');
     res.status(204).send();
   } catch (error) {
     console.error('Error in deleteBooking:', error);

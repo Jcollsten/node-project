@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { AuthenticatedRequest } from '../types/express'; // Import the custom type
+import logger from '../utils/loggerUtil.js';
 
 const JWT_SECRET: string = process.env.JWT_SECRET || 'your_secret_key';
 
@@ -11,6 +12,7 @@ const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextF
   const token = authHeader && authHeader.split(' ')[1];
 
   if (!token) {
+    logger.warn('Unauthorized access attempt: Missing token');
     res.status(401).json({ message: 'Unauthorized: Token is missing' });
     return;
   }
@@ -18,24 +20,25 @@ const authenticateToken = (req: AuthenticatedRequest, res: Response, next: NextF
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as { id: string; role: string };
     req.user = decoded;
+    logger.info(`Token verified for user ID: ${decoded.id}`);
     next();
-    console;
   } catch (error) {
+    logger.error('Unauthorized access attempt: Invalid or expired token');
     res.status(401).json({ message: 'Unauthorized: Invalid or expired token' });
   }
 };
 
 export const authorizeRole = (role: string) => {
   return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
-    console.log(`Checking user role: ${req.user?.role}`);
-    console.log(`Required role: ${role}`);
+    logger.info(`Checking user role: ${req.user?.role}, Required role: ${role}`);
 
     if (!req.user || req.user.role !== role) {
-      console.log(`User role mismatch. Required: ${role}, Found: ${req.user?.role}`);
+      logger.warn(`Role mismatch: Required: ${role}, Found: ${req.user?.role}`);
       res.status(403).json({ message: 'Forbidden, you do not have the necessary permissions' });
       return;
     }
-    console.log('User role validated, proceeding...');
+
+    logger.info('User role validated, proceeding...');
     next();
   };
 };

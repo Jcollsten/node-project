@@ -4,7 +4,6 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
     "dev": "nodemon --watch src --ext ts --exec \"node --loader ts-node/esm\" src/server.ts",
     "docker-up": "docker-compose up -d",
     "docker-down": "docker-compose down",
@@ -38,7 +37,8 @@
     "redis": "^4.7.0",
     "redoc-express": "^2.1.0",
     "socket.io": "^4.8.1",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "@tsconfig/node20": "^20.1.5",

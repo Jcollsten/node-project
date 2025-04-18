@@ -3,6 +3,7 @@ import userRoutes from './userRoutes.js';
 import roomRoutes from './roomRoutes.js';
 import authRoutes from './authRoutes.js';
 import bookingRoutes from './bookingRoutes.js';
+import logger from '../utils/loggerUtil.js';
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ const router = express.Router();
 router.use(
   '/users',
   (req, res, next) => {
-    console.log('User routes accessed');
+    logger.info('User routes accessed');
     next();
   },
   userRoutes
@@ -19,7 +20,7 @@ router.use(
 router.use(
   '/rooms',
   (req, res, next) => {
-    console.log('Room routes accessed');
+    logger.info('Room routes accessed');
     next();
   },
   roomRoutes
@@ -28,7 +29,7 @@ router.use(
 router.use(
   '/auth',
   (req, res, next) => {
-    console.log('Auth routes accessed');
+    logger.info('Auth routes accessed');
     next();
   },
   authRoutes
@@ -37,7 +38,7 @@ router.use(
 router.use(
   '/bookings',
   (req, res, next) => {
-    console.log('Booking routes accessed:', req.originalUrl);
+    logger.info('Booking routes accessed:', req.originalUrl);
     next();
   },
   bookingRoutes

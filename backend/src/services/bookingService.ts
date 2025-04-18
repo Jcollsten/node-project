@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { io } from '../server.js'; // Import socket instance
+import { io } from '../server.js';
 
 const prisma = new PrismaClient();
 
@@ -69,7 +69,7 @@ export const createBookingService = async (bookingData: { roomId: number; userId
     },
   });
 
-  // Notify clients about the new booking
+  // send notification
   io.emit('bookingCreated', booking);
 
   return booking;
@@ -94,7 +94,7 @@ export const updateBookingService = async (id: number, updatedData: any) => {
     data: updatedData,
   });
 
-  // Notify clients about the updated booking
+  // Notify clients
   io.emit('bookingUpdated', updatedBooking);
 
   return updatedBooking;
@@ -111,7 +111,7 @@ export const deleteBookingService = async (id: number) => {
     where: { id },
   });
 
-  // Notify clients about the deleted booking
+  // Notify clients
   io.emit('bookingDeleted', deletedBooking);
 
   return deletedBooking;
@@ -123,8 +123,8 @@ export const checkRoomAvailabilityService = async (roomId: number, startTime: st
       roomId,
       OR: [
         {
-          startTime: { lte: new Date(endTime) },
-          endTime: { gte: new Date(startTime) },
+          startTime: { lte: new Date(endTime) }, //less than or equal to endTime
+          endTime: { gte: new Date(startTime) }, //greater than or equal to startTime
         },
       ],
     },
