@@ -13,8 +13,8 @@ router.get(
   cacheMiddleware(() => 'allRooms'),
   getAllRooms
 );
-router.get('/getRoomById:id', authenticateToken, getRoomById);
-router.put('/UpdateRoom:id', authenticateToken, authorizeRole('Admin'), updateRoom);
-router.delete('/DeleteRoom:id', authenticateToken, authorizeRole('Admin'), deleteRoom);
+router.get('/getRoomById', authenticateToken, getRoomById);
+router.put('/UpdateRoom', authenticateToken, authorizeRole('Admin'), updateRoom);
+router.delete('/DeleteRoom', authenticateToken, authorizeRole('Admin'), deleteRoom);
 
 export default router;

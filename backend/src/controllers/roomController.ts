@@ -39,8 +39,8 @@ export const getAllRooms = async (req: Request, res: Response): Promise<void> =>
 
 export const getRoomById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
-    const room = await getRoomByIdService(Number(id));
+    const { roomId } = req.body;
+    const room = await getRoomByIdService(Number(roomId));
     if (!room) {
       res.status(404).json({ message: 'Room not found' });
       return;
@@ -54,9 +54,9 @@ export const getRoomById = async (req: Request, res: Response): Promise<void> =>
 
 export const updateRoom = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const { roomId } = req.body;
     const updatedData = req.body;
-    const updatedRoom = await updateRoomService(Number(id), updatedData);
+    const updatedRoom = await updateRoomService(Number(roomId), updatedData);
     await redisClient.del('allRooms');
     res.status(200).json(updatedRoom);
   } catch (error) {
@@ -67,8 +67,8 @@ export const updateRoom = async (req: Request, res: Response): Promise<void> => 
 
 export const deleteRoom = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
-    await deleteRoomService(Number(id));
+    const { roomId } = req.params;
+    await deleteRoomService(Number(roomId));
     await redisClient.del('allRooms');
     res.status(204).send();
   } catch (error) {
