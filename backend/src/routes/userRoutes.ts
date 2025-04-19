@@ -13,8 +13,8 @@ router.get(
   cacheMiddleware(() => 'allUsers'),
   getAllUsers
 );
-router.get('/getUserById:id', authenticateToken, authorizeRole('Admin'), getUserById);
-router.put('/updateUser:id', authenticateToken, authorizeRole('Admin'), updateUser);
-router.delete('/deleteUser:id', authenticateToken, authorizeRole('Admin'), deleteUser);
+router.get('/getUserById', authenticateToken, authorizeRole('Admin'), getUserById);
+router.put('/updateUser', authenticateToken, authorizeRole('Admin'), updateUser);
+router.delete('/deleteUser', authenticateToken, authorizeRole('Admin'), deleteUser);
 
 export default router;
