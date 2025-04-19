@@ -1,0 +1,35 @@
+# version: '3.9'
+
+# services:
+#   backend:
+#     build:
+#       context: .
+#       args:
+#         NODE_ENV: development
+#     ports:
+#       - '3000:3000'
+#     env_file:
+#       - .env.development
+#     volumes:
+#       - .:/app
+#       - /app/node_modules
+#     command: npm run dev
+
+#   redis:
+#     image: redis:7.0
+#     container_name: redis_backend
+#     ports:
+#       - '6379:6379'
+
+#   postgres:
+#     image: postgres:15.2
+#     container_name: postgres_backend
+#     env_file:
+#       - .env.development
+#     ports:
+#       - '5432:5432'
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#   postgres_data:

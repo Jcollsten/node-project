@@ -4,25 +4,22 @@ FROM node:22
 # Set working directory
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
 
-# Install dependencies 
-ARG NODE_ENV=production
-RUN if [ "$NODE_ENV" = "development" ]; then npm install; else npm install --only=production; fi
+# Install dependencies
+RUN npm install
 
-# Set environment
-ENV NODE_ENV=$NODE_ENV
-
-# Copy remaining app files
+# Copy source code
 COPY . .
 
-# Build TypeScript code
-RUN if [ "$NODE_ENV" = "production" ]; then npm run build; fi
-
-# Prisma
+# Generate Prisma client
 RUN npx prisma generate
 
-# Expose app port
+# Build TypeScript code
+RUN npm run build
+
+# Expose port
 EXPOSE 3000
 
 # Run the app
