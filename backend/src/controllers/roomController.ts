@@ -78,7 +78,7 @@ export const updateRoom = async (req: Request, res: Response): Promise<void> => 
 
 export const deleteRoom = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     await deleteRoomService(Number(id));
     await redisClient.del('allRooms');
     res.status(204).send();
