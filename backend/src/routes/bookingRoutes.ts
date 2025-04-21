@@ -9,7 +9,7 @@ const router = Router();
 router.get('/my-bookings', authenticateToken, getBookingsByUserId);
 router.post('/createBooking', authenticateToken, createBooking);
 router.put('/updateBooking', authenticateToken, updateBooking);
-router.delete('/:id', authenticateToken, deleteBooking);
+router.delete('/deleteBooking', authenticateToken, deleteBooking);
 
 // For Admins
 router.get(
@@ -19,7 +19,7 @@ router.get(
   cacheMiddleware(() => 'allBookings'),
   getAllBookings
 );
-router.get('/room/:roomId', authenticateToken, authorizeRole('Admin'), getBookingsByRoomId);
-router.get('/user/:id', authenticateToken, authorizeRole('Admin'), getBookingById);
+router.get('/room', authenticateToken, authorizeRole('Admin'), getBookingsByRoomId);
+router.get('/user', authenticateToken, authorizeRole('Admin'), getBookingById);
 
 export default router;

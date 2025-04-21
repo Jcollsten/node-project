@@ -43,7 +43,7 @@ export const getBookingsByUserId = async (req: AuthenticatedRequest, res: Respon
 // Get bookings by room ID and optionally filter by date (Admin only)
 export const getBookingsByRoomId = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { roomId } = req.params;
+    const { roomId } = req.body;
     const { date } = req.query;
     const bookings = await getBookingsByRoomIdService(Number(roomId), date as string);
     res.status(200).json(bookings);
@@ -57,7 +57,7 @@ export const getBookingsByRoomId = async (req: Request, res: Response): Promise<
 export const getBookingById = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   console.log('Decoded user:', req.user);
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     const booking = await getBookingByIdService(Number(id));
     if (!booking) {
       res.status(404).json({ message: 'Booking not found' });
