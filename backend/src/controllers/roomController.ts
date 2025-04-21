@@ -55,8 +55,14 @@ export const getRoomById = async (req: Request, res: Response): Promise<void> =>
 export const updateRoom = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.body;
-    const updatedData = req.body;
-    const updatedRoom = await updateRoomService(Number(id), updatedData);
+    const { name, type } = req.body;
+    const { capacity } = req.body;
+
+    const updatedRoom = await updateRoomService(Number(id), {
+      name: String(name),
+      type: String(type),
+      capacity: Number(capacity),
+    });
     await redisClient.del('allRooms');
     res.status(200).json(updatedRoom);
   } catch (error) {
