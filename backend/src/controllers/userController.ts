@@ -55,8 +55,18 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.body;
-    const updatedData = req.body;
+    const { id, username, password, role } = req.body;
+
+    if (!id) {
+      res.status(400).json({ message: 'User ID is required' });
+      return;
+    }
+
+    const updatedData: Partial<{ username: string; password: string; role: string }> = {};
+    if (username !== undefined) updatedData.username = username;
+    if (password !== undefined) updatedData.password = password;
+    if (role !== undefined) updatedData.role = role;
+
     const updatedUser = await updateUserService(id, updatedData);
     await redisClient.del('allUsers');
     res.status(200).json(updatedUser);

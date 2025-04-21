@@ -54,15 +54,20 @@ export const getRoomById = async (req: Request, res: Response): Promise<void> =>
 
 export const updateRoom = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { id } = req.body;
-    const { name, type } = req.body;
-    const { capacity } = req.body;
+    const { id, name, type, capacity } = req.body;
 
-    const updatedRoom = await updateRoomService(Number(id), {
-      name: String(name),
-      type: String(type),
-      capacity: Number(capacity),
-    });
+    if (!id) {
+      res.status(400).json({ message: 'Room ID is required' });
+      return;
+    }
+
+    const updatedData: Partial<{ name: string; type: string; capacity: number }> = {};
+    if (name !== undefined) updatedData.name = String(name);
+    if (type !== undefined) updatedData.type = String(type);
+    if (capacity !== undefined) updatedData.capacity = Number(capacity);
+
+    const updatedRoom = await updateRoomService(Number(id), updatedData);
+
     await redisClient.del('allRooms');
     res.status(200).json(updatedRoom);
   } catch (error) {
