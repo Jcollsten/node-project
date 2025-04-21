@@ -54,9 +54,9 @@ export const getRoomById = async (req: Request, res: Response): Promise<void> =>
 
 export const updateRoom = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { roomId } = req.body;
+    const { id } = req.body;
     const updatedData = req.body;
-    const updatedRoom = await updateRoomService(Number(roomId), updatedData);
+    const updatedRoom = await updateRoomService(Number(id), updatedData);
     await redisClient.del('allRooms');
     res.status(200).json(updatedRoom);
   } catch (error) {
@@ -67,8 +67,8 @@ export const updateRoom = async (req: Request, res: Response): Promise<void> => 
 
 export const deleteRoom = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { roomId } = req.params;
-    await deleteRoomService(Number(roomId));
+    const { id } = req.params;
+    await deleteRoomService(Number(id));
     await redisClient.del('allRooms');
     res.status(204).send();
   } catch (error) {
