@@ -80,11 +80,12 @@ export const getBookingById = async (req: AuthenticatedRequest, res: Response): 
 // Create a new booking (User-specific)
 export const createBooking = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    const { roomId, startTime, endTime } = req.body;
+    const roomId = Number(req.body.roomId);
+    const { startTime, endTime } = req.body;
     const userId = req.user?.id;
 
-    if (!roomId || !startTime || !endTime || !userId) {
-      res.status(400).json({ message: 'Missing required fields' });
+    if (!roomId || isNaN(roomId) || !startTime || !endTime || !userId) {
+      res.status(400).json({ message: 'Missing or invalid required fields' });
       return;
     }
 
@@ -140,7 +141,7 @@ export const updateBooking = async (req: AuthenticatedRequest, res: Response): P
 // Delete a booking
 export const deleteBooking = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
     const userId = req.user?.id;
     const role = req.user?.role;
 
