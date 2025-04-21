@@ -1,12 +1,14 @@
 import { io } from 'socket.io-client';
 
-console.log('Starting WebSocket client...');
+const serverUrl = process.env.SERVER_URL || 'http://localhost:3000';
+// node-project-production-1737.up.railway.app
 
-const socket = io('http://localhost:3000');
+console.log(`Starting WebSocket client. Connecting to: ${serverUrl}`);
+
+const socket = io(serverUrl);
 
 socket.on('connect', () => {
   console.log('Successfully connected to the WebSocket server');
-  console.log('Connected to the server');
 });
 
 socket.on('broadcast', (data) => {
@@ -14,15 +16,15 @@ socket.on('broadcast', (data) => {
 });
 
 socket.on('bookingCreated', (data) => {
-  console.log('Booking created event received:', data);
+  console.log(' Booking created event:', data);
 });
 
 socket.on('bookingUpdated', (data) => {
-  console.log('Booking updated event received:', data);
+  console.log('Booking updated event:', data);
 });
 
 socket.on('bookingDeleted', (data) => {
-  console.log('Booking deleted event received:', data);
+  console.log('Booking deleted event:', data);
 });
 
 socket.on('disconnect', () => {

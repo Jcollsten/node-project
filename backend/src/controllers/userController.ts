@@ -40,8 +40,8 @@ export const getAllUsers = async (req: Request, res: Response): Promise<void> =>
 
 export const getUserById = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { userId } = req.body;
-    const user = await getUserByIdService(userId);
+    const { id } = req.body;
+    const user = await getUserByIdService(id);
     if (!user) {
       res.status(404).json({ message: 'User not found' });
       return;
@@ -55,9 +55,9 @@ export const getUserById = async (req: Request, res: Response): Promise<void> =>
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { userId } = req.body;
+    const { id } = req.body;
     const updatedData = req.body;
-    const updatedUser = await updateUserService(userId, updatedData);
+    const updatedUser = await updateUserService(id, updatedData);
     await redisClient.del('allUsers');
     res.status(200).json(updatedUser);
   } catch (error) {
@@ -68,8 +68,8 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
 
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { userId } = req.body;
-    await deleteUserService(userId);
+    const { id } = req.body;
+    await deleteUserService(id);
     await redisClient.del('allUsers');
     res.status(204).send();
   } catch (error) {

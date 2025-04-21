@@ -1,0 +1,17 @@
+# Dockerfile.socket-client
+
+FROM node:22
+WORKDIR /app
+
+# Copy over package.json and install dependencies
+COPY ./package*.json ./
+RUN npm install
+
+# Copy all code from utils/socket-client
+COPY ./src/utils/socket-client/ ./
+
+# Build the code (optional if you're using TS)
+RUN npm run build
+
+# Command to start the socket client
+CMD ["npm", "start"]
